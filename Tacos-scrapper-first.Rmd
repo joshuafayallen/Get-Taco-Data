@@ -1,0 +1,51 @@
+---
+title: "Tacos in Atlanta"
+author: "Josh Allen"
+date: "5/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(pacman)
+p_load("tidyverse", "rvest")
+
+
+taco_data_raw = read_html("https://www.atlantamagazine.com/50-best-tacos-in-atlanta/") 
+
+
+
+
+```
+
+```{r  get-taco-container}
+
+places = taco_data_raw %>% 
+  html_elements("h5") %>% 
+  html_text()
+
+places_dat = as_tibble(places)
+
+places_dat = places_dat %>% 
+  rename(name = value)
+
+write_csv(places_dat, file = "atlanta_Tacos.csv")
+
+
+taco_data_address = taco_data_raw %>% 
+  html_elements(".address") %>% 
+  html_text2()
+
+taco_data_address_table = as_tibble(taco_data_address) 
+
+
+taco_data_address_table = taco_data_address_table %>% 
+  rename(address = value)
+
+full_list = cbind(places_dat, taco_data_address_table)
+
+
+
+```
+
